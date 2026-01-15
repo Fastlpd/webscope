@@ -1,0 +1,11 @@
+test@example.com
+user@gmail.com
+employee@mycompany.com
+contact@business.co.uk
+info@organization.org
+user@yahoo.com
+contact@another-company.net
+test@hotmail.com
+john.doe@corporate-domain.com
+jane.doe@personal-blog.com
+			
