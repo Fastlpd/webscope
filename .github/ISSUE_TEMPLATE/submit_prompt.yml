@@ -1,0 +1,82 @@
+﻿name: Submit a New Prompt
+description: Suggest or submit a new e-commerce prompt to the NexCart Prompt Vault.
+title: "[Prompt Submission]: "
+labels: ["prompts", "community-submission"]
+body:
+- type: markdown
+attributes:
+  value: |
+    Thanks for contributing a new prompt to the **NexCart Prompt Vault**! Please fill out the details below.
+
+- type: dropdown
+id: category
+attributes:
+  label: Category
+  description: Select the category that best fits this prompt.
+  options:
+    - Strategy
+    - Branding
+    - Design
+    - Content_Product
+    - Content_Category
+    - Blog
+    - SEO
+    - StructuredData
+    - Ads_Search
+    - Ads_Social
+    - Email
+    - Retention
+    - Checkout
+    - Payments
+    - Integrations
+    - Dev_Scaffold
+    - Tests
+    - Performance
+    - Security
+    - Analytics
+    - SQL
+    - CRO
+    - Ops
+    - Launch
+    - Support
+    - Bot
+    - Localization
+    - Accessibility
+    - QA
+    - NicheStarter
+validations:
+  required: true
+
+- type: dropdown
+id: niche
+attributes:
+  label: Target Niche
+  description: Select the relevant niche or choose 'All niches'.
+  options:
+    - All niches
+    - Pet supplies
+    - Smart home
+    - Baby & kids
+    - Travel accessories
+    - Eco / sustainable
+    - Fashion / Apparel
+validations:
+  required: true
+
+- type: textarea
+id: prompt_text
+attributes:
+  label: Prompt Text
+  description: Provide the complete prompt text. Include placeholders in {curly_braces} like {brand_name}, {niche}, etc.
+  placeholder: "e.g., Write a product page for {product_name} for {brand_name} ({niche})..."
+validations:
+  required: true
+
+- type: input
+id: placeholders
+attributes:
+  label: Placeholders
+  description: Comma-separated list of placeholders used in the prompt.
+  placeholder: "{brand_name},{niche},{audience}"
+validations:
+  required: false
