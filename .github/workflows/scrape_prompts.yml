@@ -1,0 +1,52 @@
+﻿name: Prompt scrape and analysis (open PR)
+
+on:
+workflow_dispatch: {}
+schedule:
+- cron: '0 3 * * *'
+
+jobs:
+scrape:
+runs-on: ubuntu-latest
+steps:
+  - name: Checkout
+    uses: actions/checkout@v4
+    with:
+      fetch-depth: 0
+
+  - name: Set up Python
+    uses: actions/setup-python@v4
+    with:
+      python-version: '3.10'
+
+  - name: Install dependencies
+    run: |
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+
+  - name: Run prompt scraper
+    env:
+      PROMPT_SOURCES: ${{ secrets.PROMPT_SOURCES }}
+      PROMPT_DOMAINS_BLOCK: ${{ secrets.PROMPT_DOMAINS_BLOCK }}
+      PROMPT_DOMAINS_ALLOW: ${{ secrets.PROMPT_DOMAINS_ALLOW }}
+      MAX_PROMPTS_PER_SOURCE: ${{ secrets.MAX_PROMPTS_PER_SOURCE }}
+      MIN_PROMPT_WORDS: ${{ secrets.MIN_PROMPT_WORDS }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      ENABLE_LLM_RATING: ${{ secrets.ENABLE_LLM_RATING }}
+      OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
+    run: |
+      python scripts/scrape_and_analyze.py
+
+  - name: Create Pull Request (if prompts changed)
+    uses: peter-evans/create-pull-request@v5
+    with:
+      token: ${{ secrets.GITHUB_TOKEN }}
+      commit-message: 'chore: update prompt bank (automated scrape)'
+      branch: 'automated/prompt-bank-update-${{ github.run_id }}'
+      title: 'Automated prompt bank update (scrape)'
+      body: |
+        This PR contains newly scraped prompts collected by the scheduled scraper.
+        - Review added prompts in prompts/prompt_bank.csv
+        - Confirm sources and compliance before merging
+      labels: automated, prompts
+      path: prompts/prompt_bank.csv
