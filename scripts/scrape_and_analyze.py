@@ -1,250 +1,159 @@
-﻿from __future__ import annotations
+from __future__ import annotations
+
+"""Collect reusable prompt templates from configured public web pages.
+
+This script deliberately uses the repository's existing prompt bank. It does not
+write video scripts; that separate responsibility lives in nexcartia_video/.
+"""
 
 import csv
 import hashlib
 import os
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import Optional
+from urllib.parse import urlparse
 
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
-
-# Optional: LLM rating
-try:
-import openai
-except Exception:
-openai = None
 
 ROOT = Path(__file__).resolve().parents[1]
 PROMPTS_DIR = ROOT / "prompts"
 PROMPT_BANK = PROMPTS_DIR / "prompt_bank.csv"
-
-DEFAULT_HEADERS = ["id", "niche", "prompt", "source", "rating", "unique_score", "first_seen"]
-
-# Heuristic config (override with env vars)
+BASE_HEADERS = ["id", "category", "niche", "prompt", "placeholders", "source", "rating", "unique_score", "first_seen"]
 MIN_WORDS = int(os.getenv("MIN_PROMPT_WORDS", "8"))
 MAX_PROMPTS_PER_SOURCE = int(os.getenv("MAX_PROMPTS_PER_SOURCE", "20"))
-PROMPT_DOMAINS_BLOCK = [d.strip().lower() for d in os.getenv("PROMPT_DOMAINS_BLOCK", "").split(",") if d.strip()]
-PROMPT_DOMAINS_ALLOW = [d.strip().lower() for d in os.getenv("PROMPT_DOMAINS_ALLOW", "").split(",") if d.strip()]
+BLOCKED = [x.strip().lower() for x in os.getenv("PROMPT_DOMAINS_BLOCK", "").split(",") if x.strip()]
+ALLOWED = [x.strip().lower() for x in os.getenv("PROMPT_DOMAINS_ALLOW", "").split(",") if x.strip()]
+MARKERS = re.compile(r"\b(prompt|instruction|task|input|output)\b", re.I)
+PLACEHOLDER = re.compile(r"\{([^}]+)\}|\[(NAME|ITEM)\]", re.I)
 
-PROMPT_MARKERS = [
-r"\bprompt\b", r"\binstruction\b", r"\btask\b", r"\binput\b", r"\boutput\b", r"^#{1,3}\s*prompt\b",
-]
-PLACEHOLDER_PATTERN = re.compile(r"(\{[^}]+\}|\[NAME\]|\[ITEM\])", re.I)
-URL_RE = re.compile(r"https?://|www\.", re.I)
-EMAIL_RE = re.compile(r"\S+@\S+\.\S+")
 
-def ensure_prompt_bank():
-PROMPTS_DIR.mkdir(exist_ok=True)
-if not PROMPT_BANK.exists():
-    with PROMPT_BANK.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow(DEFAULT_HEADERS)
+def normalize(text: str) -> str:
+    return re.sub(r"\s+", " ", text).strip().lower().replace('"', "").replace("'", "")
 
-def normalize_text(t: str) -> str:
-t = re.sub(r"\s+", " ", t).strip()
-t = t.lower()
-t = re.sub(r"[\"'`]", "", t)
-return t
 
-def hash_text(text: str) -> str:
-return hashlib.sha1(text.encode("utf-8")).hexdigest()
+def digest(text: str) -> str:
+    return hashlib.sha256(normalize(text).encode("utf-8")).hexdigest()
 
-def load_existing_hashes() -> Dict[str, Dict]:
-if not PROMPT_BANK.exists():
-    return {}
-df = pd.read_csv(PROMPT_BANK)
-out = {}
-for _, row in df.iterrows():
-    h = hash_text(normalize_text(str(row.get("prompt", ""))))
-    out[h] = row.to_dict()
-return out
+
+def ensure_prompt_bank() -> None:
+    PROMPTS_DIR.mkdir(parents=True, exist_ok=True)
+    if not PROMPT_BANK.exists():
+        with PROMPT_BANK.open("w", newline="", encoding="utf-8") as f:
+            csv.DictWriter(f, fieldnames=BASE_HEADERS).writeheader()
+
+
+def read_rows() -> tuple[list[str], list[dict[str, str]]]:
+    ensure_prompt_bank()
+    with PROMPT_BANK.open("r", newline="", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        headers = list(reader.fieldnames or [])
+        rows = [{k: (v or "") for k, v in row.items() if k is not None} for row in reader]
+    # Preserve the current CSV's columns and add fields used by this scraper.
+    for field in BASE_HEADERS:
+        if field not in headers:
+            headers.append(field)
+    return headers, rows
+
+
+def write_rows(headers: list[str], rows: list[dict[str, str]]) -> None:
+    temp = PROMPT_BANK.with_suffix(".csv.tmp")
+    with temp.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=headers, extrasaction="ignore")
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({h: row.get(h, "") for h in headers})
+    temp.replace(PROMPT_BANK)
+
 
 def looks_like_prompt(text: str) -> bool:
-if URL_RE.search(text) or EMAIL_RE.search(text):
-    return False
-words = text.split()
-if len(words) < MIN_WORDS:
-    return False
-marker_found = any(re.search(m, text, re.I | re.M) for m in PROMPT_MARKERS)
-placeholder_found = bool(PLACEHOLDER_PATTERN.search(text))
-template_phrases = bool(re.search(r"\b(create|generate|write|produce|draft|compose)\b", text, re.I))
-return marker_found or placeholder_found or (template_phrases and len(words) >= (MIN_WORDS + 4))
+    if len(text.split()) < MIN_WORDS or re.search(r"https?://|\S+@\S+\.\S+", text, re.I):
+        return False
+    return bool(MARKERS.search(text) or PLACEHOLDER.search(text) or re.search(r"\b(create|generate|write|produce|draft|compose)\b", text, re.I))
 
-def extract_prompts_from_html(html: str) -> List[str]:
-soup = BeautifulSoup(html, "html.parser")
-candidates: List[str] = []
 
-# prefer code/pre/blockquote blocks
-for tag in soup.find_all(["pre", "code", "blockquote"]):
-    t = tag.get_text(separator=" ").strip()
-    if not t:
-        continue
-    t_norm = re.sub(r"\s+", " ", t)
-    if looks_like_prompt(t_norm):
-        candidates.append(t_norm)
+def extract_prompts(html: str) -> list[str]:
+    soup = BeautifulSoup(html, "html.parser")
+    found: list[str] = []
+    for tag in soup.find_all(["pre", "code", "blockquote", "p", "li", "h1", "h2", "h3"]):
+        text = re.sub(r"\s+", " ", tag.get_text(" ", strip=True)).strip()
+        if text and looks_like_prompt(text):
+            found.append(text)
+    unique: list[str] = []
+    seen: set[str] = set()
+    for text in found:
+        key = normalize(text)
+        if key not in seen:
+            seen.add(key)
+            unique.append(text)
+    return unique
 
-# Also scan for headings or paragraphs that explicitly start with "Prompt:" or contain markers
-for el in soup.find_all(["p", "div", "li", "h1", "h2", "h3"]):
-    txt = el.get_text(separator=" ").strip()
-    if not txt:
-        continue
-    if re.search(r"^\s*(prompt|instruction|task)\s*[:\-]\s*", txt, re.I):
-        txt_norm = re.sub(r"\s+", " ", txt)
-        if looks_like_prompt(txt_norm):
-            candidates.append(txt_norm)
 
-# de-dup normalized
-seen = set()
-out = []
-for t in candidates:
-    n = normalize_text(t)
-    if n in seen:
-        continue
-    seen.add(n)
-    out.append(t)
-return out
+def domain_allowed(url: str) -> bool:
+    host = (urlparse(url).hostname or "").lower()
+    if not host or (BLOCKED and any(x in host for x in BLOCKED)):
+        return False
+    return not ALLOWED or any(x in host for x in ALLOWED)
 
-def fetch_url(url: str) -> Optional[str]:
-try:
-    r = requests.get(url, timeout=15, headers={"User-Agent": "nexcart-prompt-scraper/1.0"})
-    r.raise_for_status()
-    return r.text
-except Exception as e:
-    print(f"Failed to fetch {url}: {e}")
-    return None
 
-def simple_score(prompt: str, niche_keywords: List[str]) -> float:
-score = 0.0
-length = len(prompt.split())
-if length > 20:
-    score += 1.0
-# bonus for niche keywords
-for kw in niche_keywords:
-    if kw.lower() in prompt.lower():
-        score += 0.5
-# penalize extremely generic prompts
-generic_phrases = ["give me", "tell me", "how to", "what is"]
-if any(p in prompt.lower() for p in generic_phrases):
-    score -= 0.3
-return round(max(0.0, score), 2)
+def infer_niche(source: str, prompt: str) -> str:
+    text = f"{source} {prompt}".lower()
+    for terms, niche in [(["pet", "dog", "cat"], "pet supplies"), (["baby", "kids"], "baby & kids"), (["travel"], "travel accessories"), (["eco", "sustain"], "eco / sustainable"), (["fashion", "apparel"], "fashion / apparel"), (["smart home", "sensor"], "smart home")]:
+        if any(term in text for term in terms):
+            return niche
+    return "uncategorized"
 
-def llm_rate(prompt: str) -> Optional[float]:
-if not openai:
-    return None
-api_key = os.getenv("OPENAI_API_KEY")
-if not api_key:
-    return None
-try:
-    openai.api_key = api_key
-    resp = openai.ChatCompletion.create(
-        model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant that rates prompt quality and uniqueness from 1 (poor) to 5 (excellent)."},
-            {"role": "user", "content": f"Rate the following prompt for uniqueness and usefulness to build e-commerce content. Return only a single number 1-5.\n\nPrompt:\n{prompt}"},
-        ],
-        temperature=0.0,
-        max_tokens=10,
-    )
-    text = resp.choices[0].message.content.strip()
-    m = re.search(r"([1-5])", text)
-    if m:
-        return float(m.group(1))
-except Exception as e:
-    print(f"LLM rating failed: {e}")
-return None
 
-def append_prompts(new_prompts: List[Dict]):
-ensure_prompt_bank()
-df_new = pd.DataFrame(new_prompts)
-if df_new.empty:
-    print("No new prompts to add.")
-    return
-df_new = df_new[DEFAULT_HEADERS]
-if PROMPT_BANK.exists():
-    df_existing = pd.read_csv(PROMPT_BANK)
-else:
-    df_existing = pd.DataFrame(columns=DEFAULT_HEADERS)
-df_combined = pd.concat([df_existing, df_new], ignore_index=True)
-df_combined.to_csv(PROMPT_BANK, index=False)
-print(f"Appended {len(df_new)} prompts to {PROMPT_BANK}")
-
-def domain_blocked(url: str) -> bool:
-domain = url.lower()
-if PROMPT_DOMAINS_BLOCK and any(block in domain for block in PROMPT_DOMAINS_BLOCK):
-    return True
-if PROMPT_DOMAINS_ALLOW and not any(allow in domain for allow in PROMPT_DOMAINS_ALLOW):
-    return True
-return False
-
-def main():
-ensure_prompt_bank()
-sources_env = os.getenv("PROMPT_SOURCES", "")
-sources = [s.strip() for s in sources_env.split(",") if s.strip()] if sources_env else []
-if not sources:
-    print("PROMPT_SOURCES not set; exiting. Set PROMPT_SOURCES environment variable to a comma-separated list of URLs or feeds.")
-    sys.exit(0)
-
-existing = load_existing_hashes()
-new_records = []
-id_counter = 1
-for src in sources:
-    if domain_blocked(src):
-        print(f"Skipping blocked or not-allowed source: {src}")
-        continue
-    print(f"Fetching {src} ...")
-    html = fetch_url(src)
-    if not html:
-        continue
-    prompts = extract_prompts_from_html(html)
-    added_for_source = 0
-    for p in prompts:
-        if added_for_source >= MAX_PROMPTS_PER_SOURCE:
-            break
-        n = normalize_text(p)
-        h = hash_text(n)
-        if h in existing:
+def main() -> int:
+    headers, rows = read_rows()
+    existing = {digest(row.get("prompt", "")) for row in rows if row.get("prompt", "").strip()}
+    sources = [s.strip() for s in os.getenv("PROMPT_SOURCES", "").split(",") if s.strip()]
+    if not sources:
+        print("PROMPT_SOURCES is not set; prompt bank left unchanged.")
+        return 0
+    new_rows: list[dict[str, str]] = []
+    next_id = max([int(r.get("id", "0")) for r in rows if (r.get("id", "").isdigit())] or [0]) + 1
+    for source in sources:
+        if not domain_allowed(source):
+            print(f"Skipping source not allowed by domain rules: {source}")
             continue
+        try:
+            response = requests.get(source, timeout=20, headers={"User-Agent": "webscope-prompt-collector/1.0"})
+            response.raise_for_status()
+        except requests.RequestException as exc:
+            print(f"Could not fetch {source}: {exc}", file=sys.stderr)
+            continue
+        added = 0
+        for prompt in extract_prompts(response.text):
+            key = digest(prompt)
+            if key in existing:
+                continue
+            placeholders = ",".join(sorted({match.group(0) for match in PLACEHOLDER.finditer(prompt)}))
+            # The current prompt bank uses category/niche/prompt/placeholders. Extra
+            # provenance fields are appended without discarding existing columns.
+            row = {h: "" for h in headers}
+            row.update({
+                "id": str(next_id), "category": "Scraped", "niche": infer_niche(source, prompt),
+                "prompt": prompt, "placeholders": placeholders, "source": source,
+                "rating": "", "unique_score": str(round(min(len(prompt.split()) / 30, 5), 2)),
+                "first_seen": datetime.now(timezone.utc).isoformat(),
+            })
+            new_rows.append(row)
+            existing.add(key)
+            next_id += 1
+            added += 1
+            if added >= MAX_PROMPTS_PER_SOURCE:
+                break
+    if new_rows:
+        write_rows(headers, rows + new_rows)
+        print(f"Added {len(new_rows)} prompts to {PROMPT_BANK}")
+    else:
+        print("No new prompts found; prompt bank left unchanged.")
+    return 0
 
-        lower_src_and_p = (src + " " + p).lower()
-        niche = "uncategorized"
-        if "pet" in lower_src_and_p:
-            niche = "pet supplies"
-        elif "baby" in lower_src_and_p:
-            niche = "baby & kids"
-        elif "travel" in lower_src_and_p:
-            niche = "travel accessories"
-        elif any(k in lower_src_and_p for k in ["eco", "sustain"]):
-            niche = "eco / sustainable"
-        elif any(k in lower_src_and_p for k in ["fashion", "apparel"]):
-            niche = "fashion / apparel"
-
-        simple = simple_score(p, [niche.split()[0]])
-        rating = None
-        if os.getenv("ENABLE_LLM_RATING", "false").lower() == "true":
-            rating = llm_rate(p)
-
-        record = {
-            "id": id_counter,
-            "niche": niche,
-            "prompt": p,
-            "source": src,
-            "rating": rating if rating is not None else "",
-            "unique_score": simple,
-            "first_seen": datetime.utcnow().isoformat(),
-        }
-        id_counter += 1
-        new_records.append(record)
-        added_for_source += 1
-
-if new_records:
-    append_prompts(new_records)
-else:
-    print("No new prompts found.")
 
 if __name__ == "__main__":
-main()
+    raise SystemExit(main())
