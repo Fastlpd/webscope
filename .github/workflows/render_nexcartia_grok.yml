@@ -1,0 +1,63 @@
+name: Render Nexcartia Rex short with Grok
+on:
+  workflow_dispatch:
+    inputs:
+      shot_file:
+        description: "JSON shot pack path"
+        required: true
+        default: "nexcartia_video/shorts/SHORT-REX-001/prompts.json"
+        type: string
+      model:
+        description: "xAI video model"
+        required: true
+        default: "grok-imagine-video-1.5"
+        type: choice
+        options:
+          - grok-imagine-video-1.5
+          - grok-imagine-video-1.5-lite
+          - grok-imagine-video
+      output_resolution:
+        description: "Resolution; higher resolution costs more"
+        required: true
+        default: "720p"
+        type: choice
+        options:
+          - 480p
+          - 720p
+          - 1080p
+permissions:
+  contents: read
+concurrency:
+  group: nexcartia-grok-render-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes ffmpeg
+      - name: Render clips with Grok Imagine
+        env:
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+          NEXCARTIA_SHOT_FILE: ${{ inputs.shot_file }}
+          GROK_VIDEO_MODEL: ${{ inputs.model }}
+          GROK_RESOLUTION: ${{ inputs.output_resolution }}
+          NEXCARTIA_OUTPUT_DIR: rendered/nexcartia
+          GROK_TIMEOUT_SECONDS: "900"
+        run: python nexcartia_video/render_grok.py
+      - name: Upload draft video artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexcartia-rex-draft-${{ github.run_number }}
+          path: rendered/nexcartia/
+          if-no-files-found: error
+          retention-days: 7
