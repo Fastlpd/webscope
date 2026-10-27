@@ -28,7 +28,7 @@ Make viewers care about Rex before they know his royal identity or see Nexcartia
 ## SHORT-REX-001 — production script
 **Title:** Half a Meal, Two Hearts
 **Target:** 42 seconds, 9:16 vertical, cinematic realism
-**Hook:** A young man has very little left—but the first thing he checks is whether his dog has eaten.
+**Hook:** A 22-year-old man has very little left—but the first thing he checks is whether his dog has eaten.
 **Emotional progression:** quiet care → shared hardship → a small act of hope → curiosity about the notebook.
 **Brand presence:** no sales pitch; the first seed of Nexcartia appears in the last seconds as a handwritten word beside a simple problem list.
 
@@ -40,7 +40,7 @@ Make viewers care about Rex before they know his royal identity or see Nexcartia
 - **Voice-over:** "The world had taken almost everything from Rex."
 - **On-screen text:** "He still had someone to care for."
 - **Transition:** cut on the soft sound of the bowl touching the floor.
-- **Generator prompt:** Photorealistic cinematic vertical 9:16 film shot, modest lived-in rented room in a working-class urban neighbourhood at blue hour, young adult man Rex with short dark hair, charcoal knit top, muted olive trousers and worn white sneakers kneels beside his medium-sized tan-and-cream mixed-breed dog with dark muzzle, brown eyes, floppy ears, white toes, plain dark harness. Rex gently checks a simple clean water bowl and sets it down carefully. Natural unposed movement, respectful realism, soft cool window light and warm wood, subtle handheld camera, 50mm lens look, quiet intimate atmosphere, no text, no logos, no luxury objects, no exaggerated sadness.
+- **Generator prompt:** Photorealistic cinematic vertical 9:16 film shot, modest lived-in rented room in a working-class urban neighbourhood at blue hour, 22-year-old man Rex with short dark hair, charcoal knit top, muted olive trousers and worn white sneakers kneels beside his medium-sized tan-and-cream mixed-breed dog with dark muzzle, brown eyes, floppy ears, white toes, plain dark harness. Rex gently checks a simple clean water bowl and sets it down carefully. Natural unposed movement, respectful realism, soft cool window light and warm wood, subtle handheld camera, 50mm lens look, quiet intimate atmosphere, no text, no logos, no luxury objects, no exaggerated sadness.
 - **Continuity lock:** same Rex face / outfit and same dog markings / harness across all shots.
 
 ### Shot 2 — 00:04–00:09 — Their small room
@@ -50,7 +50,7 @@ Make viewers care about Rex before they know his royal identity or see Nexcartia
 - **Voice-over:** "Some nights, dinner was simple. Tomorrow was still uncertain."
 - **On-screen text:** none; allow the image to breathe.
 - **Transition:** gentle match cut from the food container opening to the food being portioned.
-- **Generator prompt:** Photorealistic vertical 9:16 cinematic medium-wide shot inside a small but clean, modest rented room. Same young adult Rex, same charcoal knit top, muted olive trousers, worn white sneakers, short dark hair. Same tan-and-cream mixed-breed dog, dark muzzle, brown eyes, floppy ears, white toes, plain dark harness. A weathered table, folded thin blanket, small backpack, clean water bowl and modest food container are visible. Rex sits at the dog's level, calm and caring, not performing for camera. Soft natural blue-hour light, restrained amber practical lamp, realistic texture, 35mm lens look, no pity imagery, no text, no logos.
+- **Generator prompt:** Photorealistic vertical 9:16 cinematic medium-wide shot inside a small but clean, modest rented room. Same 22-year-old Rex, same charcoal knit top, muted olive trousers, worn white sneakers, short dark hair. Same tan-and-cream mixed-breed dog, dark muzzle, brown eyes, floppy ears, white toes, plain dark harness. A weathered table, folded thin blanket, small backpack, clean water bowl and modest food container are visible. Rex sits at the dog's level, calm and caring, not performing for camera. Soft natural blue-hour light, restrained amber practical lamp, realistic texture, 35mm lens look, no pity imagery, no text, no logos.
 - **Continuity lock:** room layout and prop positions stay stable.
 
 ### Shot 3 — 00:09–00:15 — Two different bowls
@@ -90,7 +90,7 @@ Make viewers care about Rex before they know his royal identity or see Nexcartia
 - **Voice-over:** "Maybe a small beginning could become something useful."
 - **On-screen text:** "Nexcartia — the first idea."
 - **Transition:** cut on the dog's gentle sigh into the final shot.
-- **Generator prompt:** Photorealistic cinematic vertical 9:16 close-up of Rex's hand opening a worn notebook to a clean page, pencil poised, then rack focus to the same young man's thoughtful face in the same modest room. Same short dark hair, charcoal knit top, tired but steady expression. The same tan-and-cream dog rests in the background. Warm lamp and cool window shadows, restrained teal accent on a small notebook tab, honest grounded emotion, no readable generated writing, no logos, no dramatic glow effects.
+- **Generator prompt:** Photorealistic cinematic vertical 9:16 close-up of Rex's hand opening a worn notebook to a clean page, pencil poised, then rack focus to the same 22-year-old man's thoughtful face in the same modest room. Same short dark hair, charcoal knit top, tired but steady expression. The same tan-and-cream dog rests in the background. Warm lamp and cool window shadows, restrained teal accent on a small notebook tab, honest grounded emotion, no readable generated writing, no logos, no dramatic glow effects.
 - **Continuity lock:** add the exact word Nexcartia as an editor overlay after generation.
 
 ### Shot 7 — 00:38–00:42 — The next morning
