@@ -1,0 +1,46 @@
+{
+  "content_id": "SHORT-REX-001",
+  "title": "Half a Meal, Two Hearts",
+  "model": "grok-imagine-video-1.5",
+  "duration_per_shot": 6,
+  "aspect_ratio": "9:16",
+  "resolution": "720p",
+  "generate_audio": false,
+  "shots": [
+    {
+      "id": "shot-01",
+      "duration": 6,
+      "prompt": "Photorealistic cinematic vertical 9:16. Rex is exactly 22, youthful West African man, short dark hair, lean build, kind tired eyes, charcoal knit sweater, muted olive trousers, worn white sneakers. Modest but clean rented room at blue hour. He kneels beside his loyal medium-sized tan-and-cream mixed-breed dog with darker muzzle, gentle brown eyes, floppy ears, white toes, plain dark harness, and checks the clean water bowl before touching his own food container. Close low eye-level, slow push-in, cool slate window light, warm wood, natural movement, restrained emotion, light rain and distant traffic. No text, logos, luxury props, exaggerated misery or anatomy errors."
+    },
+    {
+      "id": "shot-02",
+      "duration": 6,
+      "prompt": "Photorealistic vertical 9:16 cinematic medium-wide shot. Keep Rex exactly 22 with the same youthful face, short dark hair, charcoal knit sweater, olive trousers and worn white sneakers. Same tan-and-cream dog, dark muzzle, brown eyes, floppy ears, white toes, plain dark harness. Same modest clean room: weathered table, folded blanket, small backpack, two bowls and food container. Rex sits at the dog's level as it settles. Slow lateral camera move from doorway toward table, blue-hour window light and restrained amber lamp, realistic lived-in texture, quiet collar jingle. Dignified, not theatrical; no text or logos."
+    },
+    {
+      "id": "shot-03",
+      "duration": 6,
+      "prompt": "Photorealistic vertical 9:16 close over-the-shoulder shot. Rex, exactly 22, same youthful face and charcoal knit sweater, calmly places a modest plain meal in his own bowl and dog-safe food in a separate clean bowl for the same tan-and-cream dog with dark muzzle, brown eyes, floppy ears, white toes and dark harness. Fresh water nearby. Dog waits calmly then eats normally; Rex gently reassures it. Soft amber lamp, cool blue shadows, tactile ceramic and wood, quiet spoon sound. No unsafe leftovers, starvation imagery, text or logos."
+    },
+    {
+      "id": "shot-04",
+      "duration": 6,
+      "prompt": "Photorealistic vertical 9:16 medium profile shot in the same modest room. Rex is exactly 22, youthful face, short dark hair, charcoal knit sweater, olive trousers, worn white sneakers. He wipes the weathered table, opens a worn notebook and writes rough ideas with a pencil. His same tan-and-cream dog with dark muzzle, floppy ears, white toes and dark harness rests on a folded blanket. Used phone, plain mug, small backpack. Warm table lamp, cool blue shadows, subtle push-in, pencil scratching, intimate hopeful mood. No legible generated writing or logos."
+    },
+    {
+      "id": "shot-05",
+      "duration": 6,
+      "prompt": "Photorealistic vertical 9:16 close over-the-shoulder shot. Rex, exactly 22 with consistent youthful features and same charcoal sweater, researches everyday product ideas on an older smartphone at the worn table. Screen shows abstract unreadable interface only, no retailer logos, prices, reviews or sales numbers. He pauses and writes a note. Same tan-and-cream dog sleeps on blanket in soft focus. Phone glow, restrained teal notebook accent, natural fingers, quiet taps and one warm piano note. No holograms or text overlays."
+    },
+    {
+      "id": "shot-06",
+      "duration": 6,
+      "prompt": "Photorealistic cinematic vertical 9:16 close-up. Rex is exactly 22, youthful face, short dark hair, charcoal sweater, same modest room. His hand turns to a fresh notebook page; he pauses with pencil poised, then looks toward his same tan-and-cream dog resting in the background. Rack focus from pencil to Rex's expressive eyes. Warm lamp, cool window shadows, restrained teal tab, honest emotion, no magical glow, readable writing or logos. Add the word Nexcartia later as an editor overlay."
+    },
+    {
+      "id": "shot-07",
+      "duration": 6,
+      "prompt": "Photorealistic cinematic vertical 9:16 morning shot in the same modest room. Rex, exactly 22, same youthful face, short dark hair, charcoal sweater, olive trousers and worn white sneakers, clips a simple leash to the same tan-and-cream dog with dark muzzle, brown eyes, floppy ears, white toes and plain dark harness. He slips the worn notebook into his small backpack. Gentle dawn light, cool slate shadows, restrained hope. Start close on leash clip then tilt toward open doorway; leash click and birds. No text, logos or luxury items. Leave space for editor-added end card 'Next: The Last Coins.'"
+    }
+  ]
+}
