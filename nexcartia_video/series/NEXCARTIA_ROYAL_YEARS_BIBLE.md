@@ -414,3 +414,21 @@ This is a creative development document, not production approval. Character port
 5. Whether the series is one 15-episode season or split into two seasons after the first exile/business arc.
 
 Until approved, the complexion/family resemblance direction is fixed, but individual faces are not yet permanent.
+
+
+## Illustrated episode production standard (added 2026-10-31)
+Every episode is an illustrated cinematic story package, not a script with one decorative cover. Each package must include:
+1. Complete screenplay with scene numbers and sluglines.
+2. Scene-by-scene storyboard with framing, composition, action, expression, camera, lighting, palette and continuity notes.
+3. One separate illustration for every major scene/story beat. Never substitute one collage for individual scene images.
+4. Illustration prompts that cite the approved character reference IDs, in-world age, wardrobe, location, time, action and visual style.
+5. A scene-image index mapping each image to its exact script scene.
+6. Continuity ledger for character knowledge, elapsed time, props, wardrobe, locations, relationships and Milo's age.
+7. Creator approval before a batch is considered final or used for video generation.
+
+Maintain one consistent cinematic illustrated-realism style. Rex is the primary face anchor. The royal family must retain recognisable family resemblance and fair-to-light warm complexions, with stable facial features across every illustration. Milo must be a puppy in the palace and early exile scenes; preserve his brown coat and small white chest marking. Individual faces remain provisional until the creator approves permanent reference portraits.
+
+Recommended episode folder:
+`brief.md`, `script.md`, `continuity.md`, `storyboard.md`, `illustration_prompts.md`, `illustrations/scene-001.png` etc., and `approval.md`.
+
+Do not label an episode "illustrated and complete" until the actual scene illustrations exist and have been reviewed. Do not generate video or publish without explicit creator approval.
