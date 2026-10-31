@@ -29,8 +29,8 @@ jobs:
           PROMPT_SOURCES: ${{ secrets.PROMPT_SOURCES }}
           PROMPT_DOMAINS_BLOCK: ${{ secrets.PROMPT_DOMAINS_BLOCK }}
           PROMPT_DOMAINS_ALLOW: ${{ secrets.PROMPT_DOMAINS_ALLOW }}
-          MAX_PROMPTS_PER_SOURCE: ${{ secrets.MAX_PROMPTS_PER_SOURCE }}
-          MIN_PROMPT_WORDS: ${{ secrets.MIN_PROMPT_WORDS }}
+          MAX_PROMPTS_PER_SOURCE: ${{ secrets.MAX_PROMPTS_PER_SOURCE || '20' }}
+          MIN_PROMPT_WORDS: ${{ secrets.MIN_PROMPT_WORDS || '8' }}
         run: python scripts/scrape_and_analyze.py
 
       - name: Create pull request if prompt bank changed
