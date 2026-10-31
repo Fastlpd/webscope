@@ -93,3 +93,7 @@ Return:
 10. Human-review checklist.
 
 Style: emotionally touching, smooth, cinematic, specific, quietly magical, not generic. Favor showing over explaining. Avoid rushed romance, instant success, empty motivational slogans, fake metrics, false testimonials, unsupported product claims, and repetitive scenes. If evidence or catalogue data is missing, flag it and offer a safe alternative. Output a draft only; never upload or publish.
+
+
+## Canonical dog character — Milo
+Milo is Rex's loyal dog and first companion after exile. The name is canonical across all episodes, shorts, scripts, storyboards, and generation prompts. Preserve the same coat, size, markings, collar, leash, and temperament in every appearance. Do not change the name or redesign Milo without explicit approval.
