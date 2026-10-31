@@ -54,7 +54,7 @@ The audience should feel the loss of home before learning every detail of the co
 - Do not reveal the full reason for the betrayal; plant clues and let the season earn the truth.
 - Do not imply Rex already owns Nexcartia or has a working store.
 - Do not force a product placement into the exile sequence.
-- Keep the dog's design and name consistent with the approved character bible; if the bible has not settled the name, flag it for confirmation instead of inventing one.
+- Milo is Rex's dog. Keep Milo's coat, size, markings, collar, leash, and temperament consistent in every scene and generation.
 - Do not turn the royal parents into one-dimensional villains. Show the emotional contradiction between status, fear, guilt, and responsibility.
 - End with uncertainty, not a motivational speech.
 
