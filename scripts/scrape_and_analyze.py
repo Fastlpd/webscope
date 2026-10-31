@@ -13,7 +13,6 @@ import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
 from urllib.parse import urlparse
 
 import requests
@@ -23,8 +22,20 @@ ROOT = Path(__file__).resolve().parents[1]
 PROMPTS_DIR = ROOT / "prompts"
 PROMPT_BANK = PROMPTS_DIR / "prompt_bank.csv"
 BASE_HEADERS = ["id", "category", "niche", "prompt", "placeholders", "source", "rating", "unique_score", "first_seen"]
-MIN_WORDS = int(os.getenv("MIN_PROMPT_WORDS", "8"))
-MAX_PROMPTS_PER_SOURCE = int(os.getenv("MAX_PROMPTS_PER_SOURCE", "20"))
+def env_int(name: str, default: int, minimum: int = 1) -> int:
+    """Read an optional integer setting; empty or invalid values use a safe default."""
+    raw = os.getenv(name, "").strip()
+    if not raw:
+        return default
+    try:
+        return max(minimum, int(raw))
+    except ValueError:
+        print(f"Invalid {name}={raw!r}; using default {default}.", file=sys.stderr)
+        return default
+
+
+MIN_WORDS = env_int("MIN_PROMPT_WORDS", 8)
+MAX_PROMPTS_PER_SOURCE = env_int("MAX_PROMPTS_PER_SOURCE", 20)
 BLOCKED = [x.strip().lower() for x in os.getenv("PROMPT_DOMAINS_BLOCK", "").split(",") if x.strip()]
 ALLOWED = [x.strip().lower() for x in os.getenv("PROMPT_DOMAINS_ALLOW", "").split(",") if x.strip()]
 MARKERS = re.compile(r"\b(prompt|instruction|task|input|output)\b", re.I)
