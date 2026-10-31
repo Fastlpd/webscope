@@ -1,0 +1,9 @@
+﻿# Python artifacts
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# Ignore untracked files in data/prompts except explicitly tracked files
+prompts/*
+!prompts/prompt_bank.csv
