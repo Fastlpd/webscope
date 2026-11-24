@@ -24,7 +24,7 @@ The engine deliberately separates this studio character from Rex, Milo and the N
 - `src/story/story-strategist.ts` — emotional situation strategy and timed beat plan.
 - `src/quality/quality-evaluator.ts` — transparent heuristic screenplay quality checks.
 - `src/continuity/continuity-validator.ts` — format and continuity validation.\n- `src/continuity/session-memory.ts` — remembers the last 12 performance premises and ending images to discourage repetition.
-- `src/pipeline.ts` — provider adapter and end-to-end draft orchestration.
+- `src/pipeline.ts` — provider adapter and end-to-end draft orchestration.\n- `src/providers/openrouter-provider.ts` — working OpenRouter chat-completions adapter with JSON response validation.
 - `prompts/STUDIO_SCREENPLAY_SYSTEM.md` — generation contract for an LLM.
 - `tests/` — deterministic unit tests.
 
@@ -38,12 +38,12 @@ npm test
 npm run build
 ```
 
-No API key is required for tests. A model provider is not bundled: implement `ScreenplayProvider` and connect it to the provider already approved for the project. Keep credentials in environment variables or a secure local secret store; never commit them.
+No API key is required for tests. To generate real drafts, set `OPENROUTER_API_KEY` and `OPENROUTER_MODEL` from `.env.example`, then instantiate `OpenRouterScreenplayProvider`. The adapter uses OpenRouter's chat-completions endpoint and validates the returned JSON shape. Keep credentials in local environment variables or a secure secret store; never commit them.
 
 ## Pipeline use
 
 ```ts
-const result = await runScreenplayPipeline({
+const provider = new OpenRouterScreenplayProvider({\n  apiKey: process.env.OPENROUTER_API_KEY!,\n  model: process.env.OPENROUTER_MODEL!\n});\n\nconst result = await runScreenplayPipeline({
   character: misunderstoodDreamer,
   brief: {
     titleSeed: "The Listing",
@@ -59,7 +59,7 @@ const result = await runScreenplayPipeline({
 });
 ```
 
-The returned object includes the draft, character dossier, beat plan, quality report, validation findings and updated session memory. Pass the returned `sessionMemory` into the next run to help avoid repeating recent situations. A high score is advisory, not approval. Human review remains mandatory.
+The returned object includes the draft, character dossier, beat plan, quality report, validation findings and updated session memory. Pass the returned `sessionMemory` into the next run to help avoid repeating recent situations. The pipeline retains up to 12 recent performance premises and ending images per character. A high score is advisory, not approval. Human review remains mandatory.
 
 ## Quality model
 
