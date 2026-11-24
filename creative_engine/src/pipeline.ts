@@ -1,5 +1,5 @@
 import { analyzeCharacter } from "./character/character-intelligence.js";
-import { validateScreenplay } from "./continuity/continuity-validator.js";
+import { validateScreenplay } from "./continuity/continuity-validator.js";\nimport { createSessionMemory, recordPerformance } from "./continuity/session-memory.js";
 import { evaluateScreenplay } from "./quality/quality-evaluator.js";
 import { buildStoryPlan } from "./story/story-strategist.js";
 import type {
@@ -33,7 +33,7 @@ export async function runScreenplayPipeline(input: PipelineInput): Promise<Pipel
       ? "READY_FOR_HUMAN_REVIEW"
       : "DRAFT_NEEDS_REVIEW";
 
-  return { draft, dossier, plan, quality, validation, status };
+  const sessionMemory = recordPerformance(priorMemory, input.brief, draft);\n  return { draft, dossier, plan, quality, validation, sessionMemory, status };
 }
 
 export const misunderstoodDreamer: CharacterProfile = {
