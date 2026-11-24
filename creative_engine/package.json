@@ -1,0 +1,15 @@
+{
+  "name": "@nexcartia/studio-screenplay-engine",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A provider-independent TypeScript engine for character-led cinematic studio performances.",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
