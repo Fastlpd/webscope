@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { analyzeCharacter } from "../src/character/character-intelligence.js";
 import { validateScreenplay } from "../src/continuity/continuity-validator.js";
+import { createSessionMemory, recordPerformance } from "../src/continuity/session-memory.js";
 import { evaluateScreenplay } from "../src/quality/quality-evaluator.js";
 import { buildStoryPlan } from "../src/story/story-strategist.js";
 import { misunderstoodDreamer } from "../src/pipeline.js";
@@ -54,6 +55,13 @@ test("story plan respects the 2–4 minute range and avoids recent premises", ()
   assert.equal(plan.beats[0]?.startSeconds, 0);
   assert.equal(plan.beats[4]?.endSeconds, 200);
   assert.ok(plan.freshnessChecks.some((item) => item.includes("cancelled meeting")));
+});
+
+test("session memory records recent premises and blocks repetition", () => {
+  const memory = recordPerformance(createSessionMemory(misunderstoodDreamer.id), brief, draft);
+  const plan = buildStoryPlan({ ...brief, emotionalSituation: "A different ordinary situation." }, memory);
+  assert.equal(memory.recentPerformances.length, 1);
+  assert.ok(plan.freshnessChecks.some((item) => item.includes(brief.emotionalSituation)));
 });
 
 test("valid studio draft passes continuity validation", () => {
