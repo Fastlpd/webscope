@@ -20,7 +20,7 @@ export interface PipelineInput {
 
 export async function runScreenplayPipeline(input: PipelineInput): Promise<PipelineResult> {
   const dossier = analyzeCharacter(input.character);
-  const priorMemory = input.sessionMemory ?? createSessionMemory(input.character.id);
+  const priorMemory = input.sessionMemory ?? createSessionMemory(input.character.id);\n  if (priorMemory.characterId !== input.character.id) {\n    throw new Error("Session memory characterId does not match the active character.");\n  }
   const plan = buildStoryPlan(input.brief, priorMemory);
   const draft = await input.provider.generate({
     character: input.character,
