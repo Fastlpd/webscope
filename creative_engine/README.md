@@ -23,8 +23,10 @@ The engine deliberately separates this studio character from Rex, Milo and the N
 - `src/character/character-intelligence.ts` — role analysis and playable acting directives.
 - `src/story/story-strategist.ts` — emotional situation strategy and timed beat plan.
 - `src/quality/quality-evaluator.ts` — transparent heuristic screenplay quality checks.
-- `src/continuity/continuity-validator.ts` — format and continuity validation.\n- `src/continuity/session-memory.ts` — remembers the last 12 performance premises and ending images to discourage repetition.
-- `src/pipeline.ts` — provider adapter and end-to-end draft orchestration.\n- `src/providers/openrouter-provider.ts` — working OpenRouter chat-completions adapter with JSON response validation.
+- `src/continuity/continuity-validator.ts` — format and continuity validation.
+- `src/continuity/session-memory.ts` — remembers the last 12 performance premises and ending images to discourage repetition.
+- `src/pipeline.ts` — provider adapter and end-to-end draft orchestration.
+- `src/providers/openrouter-provider.ts` — working OpenRouter chat-completions adapter with JSON response validation.
 - `prompts/STUDIO_SCREENPLAY_SYSTEM.md` — generation contract for an LLM.
 - `tests/` — deterministic unit tests.
 
@@ -43,7 +45,12 @@ No API key is required for tests. To generate real drafts, set `OPENROUTER_API_K
 ## Pipeline use
 
 ```ts
-const provider = new OpenRouterScreenplayProvider({\n  apiKey: process.env.OPENROUTER_API_KEY!,\n  model: process.env.OPENROUTER_MODEL!\n});\n\nconst result = await runScreenplayPipeline({
+const provider = new OpenRouterScreenplayProvider({
+  apiKey: process.env.OPENROUTER_API_KEY!,
+  model: process.env.OPENROUTER_MODEL!
+});
+
+const result = await runScreenplayPipeline({
   character: misunderstoodDreamer,
   brief: {
     titleSeed: "The Listing",
