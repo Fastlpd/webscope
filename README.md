@@ -41,7 +41,7 @@ Start with:
 6. `creative_engine/src/continuity/continuity-validator.ts` — studio, runtime and production checks.
 7. `creative_engine/prompts/STUDIO_SCREENPLAY_SYSTEM.md` — model generation contract.
 
-Run from `creative_engine/`: `npm install`, `npm test`, `npm run build`. A model-provider adapter still needs to be connected; tests do not require an API key. Quality scores are heuristic editorial aids, not automatic artistic approval.
+Run from `creative_engine/`: `npm install`, copy `.env.example` to `.env`, set `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, then use `npm test`, `npm run build`, and `npm run generate -- --brief ./brief.example.json --out ./output`. The OpenRouter adapter is included; no API key is needed for tests. Quality scores are heuristic editorial aids, not automatic artistic approval.
 
 ## Long-form cinematic series
 
