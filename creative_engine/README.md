@@ -36,15 +36,23 @@ From this directory:
 
 ```bash
 npm install
+cp .env.example .env
+# Add your OpenRouter key and model to .env
 npm test
 npm run build
+npm run generate -- --brief ./brief.example.json --session ./output/session-memory.json --out ./output
 ```
 
-No API key is required for tests. To generate real drafts, set `OPENROUTER_API_KEY` and `OPENROUTER_MODEL` from `.env.example`, then instantiate `OpenRouterScreenplayProvider`. The adapter uses OpenRouter's chat-completions endpoint and validates the returned JSON shape. Keep credentials in local environment variables or a secure secret store; never commit them.
+On Windows PowerShell, copy the example with `Copy-Item .env.example .env`.
+
+No API key is required for tests. For generation, copy `.env.example` to `.env` and set `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`. The CLI loads the local environment file and calls OpenRouter's chat-completions endpoint. It saves `screenplay-result.json` and `session-memory.json` under the output directory. Keep real credentials out of Git; `.env` and generated outputs are ignored.
 
 ## Pipeline use
 
 ```ts
+import { OpenRouterScreenplayProvider } from "./src/providers/openrouter-provider.js";
+import { runScreenplayPipeline, misunderstoodDreamer } from "./src/pipeline.js";
+
 const provider = new OpenRouterScreenplayProvider({
   apiKey: process.env.OPENROUTER_API_KEY!,
   model: process.env.OPENROUTER_MODEL!
