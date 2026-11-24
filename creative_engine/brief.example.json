@@ -1,0 +1,23 @@
+{
+  "titleSeed": "The Unsent Receipt",
+  "emotionalSituation": "A man tries to return a small purchase he made for a plan he no longer discusses.",
+  "emotionalTexture": "dry-comedy",
+  "targetRuntimeSeconds": 205,
+  "studioOnly": true,
+  "continuousPerformance": true,
+  "props": ["phone", "paper receipt", "small shopping bag", "chair"],
+  "musicDirection": "Use a restrained instrumental mood; do not invent lyrics, song structure or timestamps.",
+  "audienceRecognitionPoint": "Have you ever tried to make an ordinary decision look less personal than it is?",
+  "avoidRecentSituations": [
+    "recording a comeback announcement",
+    "being repeatedly asked to help by a friend",
+    "preparing for a cancelled meeting",
+    "selling an old camera"
+  ],
+  "additionalConstraints": [
+    "Keep the character's biography ambiguous.",
+    "Use natural dry sarcasm sparingly.",
+    "End with a physical action, not a moral or quote.",
+    "Use no more than six props."
+  ]
+}

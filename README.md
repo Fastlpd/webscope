@@ -24,6 +24,25 @@ This is a separate general content workflow. It creates text-only research, scri
 - Optional Grok renderer: `nexcartia_video/render_grok.py`
 - The renderer uses an xAI API key from the environment and renders the configured shot pack. It is not the long-form episode workflow.
 
+## Character-led studio performances
+
+**Format:** one continuous 2–4 minute studio performance per script  
+**Recurring role:** the misunderstood dreamer — ambitious, observant, guarded and dryly sarcastic  
+**Purpose:** character psychology, dramatic strategy, natural dialogue, acting direction, visual storytelling, continuity and production-aware quality review
+
+The TypeScript engine is separate from the Rex / Princess canon and its 8–15 minute series workflow.
+
+Start with:
+1. `creative_engine/README.md` — setup, architecture and usage.
+2. `creative_engine/src/pipeline.ts` — provider-independent generation pipeline and default character.
+3. `creative_engine/src/character/character-intelligence.ts` — playable character analysis.
+4. `creative_engine/src/story/story-strategist.ts` — fresh dramatic situations and timed beats.
+5. `creative_engine/src/quality/quality-evaluator.ts` — explainable quality signals and revision targets.
+6. `creative_engine/src/continuity/continuity-validator.ts` — studio, runtime and production checks.
+7. `creative_engine/prompts/STUDIO_SCREENPLAY_SYSTEM.md` — model generation contract.
+
+Run from `creative_engine/`: `npm install`, copy `.env.example` to `.env`, set `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, then use `npm test`, `npm run build`, and `npm run generate -- --brief ./brief.example.json --out ./output`. The OpenRouter adapter is included; no API key is needed for tests. Quality scores are heuristic editorial aids, not automatic artistic approval.
+
 ## Long-form cinematic series
 
 **Format:** connected cinematic episodes  

@@ -1,0 +1,28 @@
+name: Studio screenplay engine
+
+on:
+  push:
+    branches:
+      - feat/studio-screenplay-engine
+    paths:
+      - "creative_engine/**"
+      - ".github/workflows/studio-screenplay-engine.yml"
+  pull_request:
+    paths:
+      - "creative_engine/**"
+      - ".github/workflows/studio-screenplay-engine.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: creative_engine
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npm test
+      - run: npm run build
