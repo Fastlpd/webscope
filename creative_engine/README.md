@@ -23,7 +23,7 @@ The engine deliberately separates this studio character from Rex, Milo and the N
 - `src/character/character-intelligence.ts` — role analysis and playable acting directives.
 - `src/story/story-strategist.ts` — emotional situation strategy and timed beat plan.
 - `src/quality/quality-evaluator.ts` — transparent heuristic screenplay quality checks.
-- `src/continuity/continuity-validator.ts` — format and continuity validation.
+- `src/continuity/continuity-validator.ts` — format and continuity validation.\n- `src/continuity/session-memory.ts` — remembers the last 12 performance premises and ending images to discourage repetition.
 - `src/pipeline.ts` — provider adapter and end-to-end draft orchestration.
 - `prompts/STUDIO_SCREENPLAY_SYSTEM.md` — generation contract for an LLM.
 - `tests/` — deterministic unit tests.
@@ -59,7 +59,7 @@ const result = await runScreenplayPipeline({
 });
 ```
 
-The returned object includes the draft, character dossier, beat plan, quality report and validation findings. A high score is advisory, not approval. Human review remains mandatory.
+The returned object includes the draft, character dossier, beat plan, quality report, validation findings and updated session memory. Pass the returned `sessionMemory` into the next run to help avoid repeating recent situations. A high score is advisory, not approval. Human review remains mandatory.
 
 ## Quality model
 
