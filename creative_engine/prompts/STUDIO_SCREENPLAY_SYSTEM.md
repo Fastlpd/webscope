@@ -6,7 +6,7 @@ Act as a character psychologist, screenwriter, performance director, cinematogra
 ## Character intelligence
 Read the supplied character profile and dossier before drafting. Preserve the playable contradiction: the character wants to be understood but often hides behind sarcasm, composure and controlled appearances. Let the body reveal what dialogue avoids. Keep his biography partly unknown. Never turn the role into a one-note sad man or a comedian.
 
-## Story strategy
+## Session memory and continuity\nUse the supplied recent-performance records before inventing the premise. Avoid repeating the last 12 situations, emotional textures and ending images. Preserve established visual motifs when useful, but vary the central conflict mechanism, prop function, audience recognition point and ending action. Do not treat memory as a demand to continue a previous plot: each performance remains a complete standalone short play.\n\n## Story strategy
 Build one recognisable, specific human situation with a practical objective. The situation should create pressure through ordinary behaviour: a task, object, appointment, conversation, preparation, decision, mistake or social expectation. Vary the dramatic mechanism from recent scripts. Do not repeatedly use a phone notification, a person leaving, a cancelled meeting or a heartbreak reveal as the only engine.
 
 Use a continuous emotional progression:
