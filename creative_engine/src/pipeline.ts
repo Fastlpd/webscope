@@ -1,9 +1,11 @@
 import { analyzeCharacter } from "./character/character-intelligence.js";
-import { validateScreenplay } from "./continuity/continuity-validator.js";\nimport { createSessionMemory, recordPerformance } from "./continuity/session-memory.js";
+import { validateScreenplay } from "./continuity/continuity-validator.js";
+import { createSessionMemory, recordPerformance } from "./continuity/session-memory.js";
 import { evaluateScreenplay } from "./quality/quality-evaluator.js";
 import { buildStoryPlan } from "./story/story-strategist.js";
 import type {
   CharacterProfile,
+  CharacterSessionMemory,
   PipelineResult,
   ScreenplayBrief,
   ScreenplayProvider
@@ -13,16 +15,19 @@ export interface PipelineInput {
   character: CharacterProfile;
   brief: ScreenplayBrief;
   provider: ScreenplayProvider;
+  sessionMemory?: CharacterSessionMemory;
 }
 
 export async function runScreenplayPipeline(input: PipelineInput): Promise<PipelineResult> {
   const dossier = analyzeCharacter(input.character);
-  const plan = buildStoryPlan(input.brief);
+  const priorMemory = input.sessionMemory ?? createSessionMemory(input.character.id);
+  const plan = buildStoryPlan(input.brief, priorMemory);
   const draft = await input.provider.generate({
     character: input.character,
     dossier,
     brief: input.brief,
-    plan
+    plan,
+    sessionMemory: priorMemory
   });
 
   const quality = evaluateScreenplay(draft);
@@ -33,7 +38,8 @@ export async function runScreenplayPipeline(input: PipelineInput): Promise<Pipel
       ? "READY_FOR_HUMAN_REVIEW"
       : "DRAFT_NEEDS_REVIEW";
 
-  const sessionMemory = recordPerformance(priorMemory, input.brief, draft);\n  return { draft, dossier, plan, quality, validation, sessionMemory, status };
+  const sessionMemory = recordPerformance(priorMemory, input.brief, draft);
+  return { draft, dossier, plan, quality, validation, sessionMemory, status };
 }
 
 export const misunderstoodDreamer: CharacterProfile = {
