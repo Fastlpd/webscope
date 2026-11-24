@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { runScreenplayPipeline, misunderstoodDreamer } from "./pipeline.js";
