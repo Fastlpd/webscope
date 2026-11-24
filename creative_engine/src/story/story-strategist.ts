@@ -1,4 +1,6 @@
+import { mergeRecentSituations } from "../continuity/session-memory.js";
 import type {
+  CharacterSessionMemory,
   EmotionalTexture,
   ScreenplayBrief,
   StoryBeat,
@@ -7,16 +9,16 @@ import type {
 
 const clamp = (value: number, min: number, max: number): number =>
   Math.max(min, Math.min(max, value));
-
 const defaultTexture: EmotionalTexture = "awkward-intimacy";
 
-export function buildStoryPlan(brief: ScreenplayBrief): StoryPlan {
+export function buildStoryPlan(
+  incomingBrief: ScreenplayBrief,
+  memory?: CharacterSessionMemory
+): StoryPlan {
+  const brief = memory ? mergeRecentSituations(incomingBrief, memory) : incomingBrief;
   const runtime = clamp(brief.targetRuntimeSeconds, 120, 240);
   const texture = brief.emotionalTexture ?? defaultTexture;
-  const points = [0, 0.14, 0.34, 0.58, 0.79, 1].map((ratio) =>
-    Math.round(runtime * ratio)
-  );
-
+  const points = [0, 0.14, 0.34, 0.58, 0.79, 1].map((ratio) => Math.round(runtime * ratio));
   const beatSpecs = [
     ["The ordinary task", "Establish a practical action and a readable immediate objective.", "The character appears in control.", "sparse"],
     ["The complication", "Introduce a believable interruption, request or small failure.", "The public mask becomes useful.", "natural"],
