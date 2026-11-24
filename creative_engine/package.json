@@ -6,7 +6,8 @@
   "description": "A provider-independent TypeScript engine for character-led cinematic studio performances.",
   "scripts": {
     "build": "tsc --noEmit",
-    "test": "tsx --test tests/*.test.ts"
+    "test": "tsx --test tests/engine.test.ts",
+    "generate": "tsx src/cli.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
